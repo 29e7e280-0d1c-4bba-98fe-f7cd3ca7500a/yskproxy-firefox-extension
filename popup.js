@@ -58,15 +58,11 @@ cbtn.onclick = function () {
     console.log('pacUrl: ' + pacUrl)
   })
   var config = {
-    mode: "pac_script",
-    pacScript: {
-      url: npacUrl
-    }
+    proxyType: "autoConfig",
+    autoConfigUrl: npacUrl
   };
-  chrome.proxy.settings.set(
-    { value: config, scope: 'regular' },
-    function () { });
-
+  
+  chrome.proxy.settings.set({value: config});
   displayCurrentProxyConfig();
 
 }
@@ -87,19 +83,11 @@ mbtn.onclick = function () {
   })
  
   var config = {
-    mode: "fixed_servers",
-    rules: {
-      singleProxy: {
-        scheme: mps,
-        host: mph,
-        port: Number(mpp)
-      },
-      bypassList: []
-    }
+    proxyType: "manual",
+    http: mps + "://" + mph + ":" + mpp,
+    httpProxyAll: true
   };
-  chrome.proxy.settings.set(
-      {value: config, scope: 'regular'},
-      function() {});
+  chrome.proxy.settings.set({value: config});
 
   displayCurrentProxyConfig();
 
@@ -108,12 +96,10 @@ mbtn.onclick = function () {
 let npBtn = document.getElementById("noproxy")
 npBtn.onclick = function () {
   var config = {
-    mode: "direct"
+    proxyType: "none"
   };
-  chrome.proxy.settings.set(
-    { value: config, scope: 'regular' },
-    function () { });
-
+  
+  chrome.proxy.settings.set({value: config});
   displayCurrentProxyConfig();
 
 }
