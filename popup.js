@@ -65,7 +65,7 @@ function setPacUrlAction(name)  {
     alert("Please enter valid configure");
     return
   }
-  npacUrl = pacUrl + "?t=" + ts;
+  npacUrl = pacUrl.replace("/(\r\n|\n|\r)/gm","");
   console.log(pacUrl);
   let pacConfigure = {};
   if (name == "pacUrl") {
