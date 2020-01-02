@@ -16,7 +16,13 @@ function jsonPretty(s) {
 }
 
 function displayCurrentProxyConfig() {
-  browser.storage.local.get("yskProxy");
+  
+  browser.storage.local.get(data => {
+    console.log(data);
+    if (data.yskProxy) {
+      getElm("ctx").value = jsonPretty(data.yskProxy).replace("/(\r\n|\n|\r)/gm","");
+    }
+  });
 }
 
 browser.storage.local.get([

@@ -9,3 +9,26 @@ You may also need pac hosting service:
 You were using chrome? see:
 
 [https://github.com/netroby/yskproxy-chrome-extension](https://github.com/netroby/yskproxy-chrome-extension)
+
+
+## quick rules
+
+```
+by default, the proxy only for whitelist, but you can set reverse to true, that means by proxy default, the whitelist then became a bypass list.
+{
+  "type": "http",
+  "host": "127.0.0.1", 
+  "port": 8123,
+  "reverse": false
+  "whitelist":[
+    'google.com',
+    'youtube.com'
+  ]
+}
+```
+
+## Version
+
+### 2020-01-02
+
+1. Upgrade using new `browser.proxy.onRequest` api

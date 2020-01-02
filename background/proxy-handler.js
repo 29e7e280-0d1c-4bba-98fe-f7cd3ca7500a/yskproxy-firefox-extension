@@ -33,32 +33,56 @@ browser.proxy.onRequest.addListener(handleProxyRequest, {
 
 // On the request to open a webpage
 function handleProxyRequest(requestInfo) {
+
+  let nowProxy = {type: "direct"}
+  let defaultProxy = nowProxy
+
   // Read the web address of the page to be visited
   const url = new URL(requestInfo.url);
   // Determine whether the domain in the web address is on the blocked hosts list
-  console.log(url);
   var host = url.hostname;
   if (yskProxy != null) {
-    console.log(yskProxy);
     yskObject = JSON.parse(yskProxy);
-    console.log(yskObject);
-    if (
-      yskObject.whitelist.findIndex(i => {
-        return host.indexOf(i) > -1;
-      }) > -1
-    ) {
-      var nowProxy = {
+
+    if (!yskObject.whitelist) {
+      return defaultProxy;
+    }
+    if (!yskObject.type || !yskObject.host || !yskObject.port) {
+      return defaultProxy;
+    } else {
+      nowProxy = {
         type: yskObject.type,
         host: yskObject.host,
         port: yskObject.port
       };
-      console.log("now using proxy ", nowProxy);
+    }
+    //Check if not enable reverse
+    if (!yskObject.reverse) {
+      if (
+        yskObject.whitelist.findIndex(i => {
+          return host.indexOf(i) > -1;
+        }) > -1
+      ) {
+        console.log(host + " now using proxy ", nowProxy);
+        return nowProxy;
+      }
+
+      return { type: "direct" };
+    } else {
+      console.log("Reverse on");
+      if (
+        yskObject.whitelist.findIndex(i => {
+          return host.indexOf(i) > -1;
+        }) > -1
+      ) {
+        return defaultProxy;
+      }
+
+      console.log(host + " now using proxy ", nowProxy);
       return nowProxy;
     }
   }
-  //return {type: "http", host: "127.0.0.1", port: 8123};
-  // Return instructions to open the requested webpage
-  return { type: "direct" };
+  return defaultProxy;
 }
 
 // Log any errors from the proxy script
