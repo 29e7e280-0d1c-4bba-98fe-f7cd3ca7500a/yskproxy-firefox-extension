@@ -21,8 +21,8 @@ by default, the proxy only for whitelist, but you can set reverse to true, that 
   "port": 8123,
   "reverse": false
   "whitelist":[
-    'google.com',
-    'youtube.com'
+    "google.com",
+    "youtube.com"
   ]
 }
 ```
