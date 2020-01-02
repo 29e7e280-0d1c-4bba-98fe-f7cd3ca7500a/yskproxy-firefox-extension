@@ -19,7 +19,7 @@ by default, the proxy only for whitelist, but you can set reverse to true, that 
   "type": "http",
   "host": "127.0.0.1", 
   "port": 8123,
-  "reverse": false
+  "reverse": false,
   "whitelist":[
     "google.com",
     "youtube.com"
