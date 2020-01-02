@@ -16,19 +16,13 @@ function jsonPretty(s) {
 }
 
 function displayCurrentProxyConfig() {
-  chrome.proxy.settings.get({}, function (data) {
-    console.log(data.value);
-    getElm("ctx").value = jsonPretty(data.value)
-  })
+  browser.storage.local.get("yskProxy");
 }
 
-chrome.storage.sync.get([
+browser.storage.local.get([
   'yskproxyPacUrl',
   'yskproxyPacUrl2',
-  'yskproxyPacUrl3',
-  'yskproxyManualProxyScheme',
-  'yskproxyManualProxyHost',
-  'yskproxyManualProxyPort',
+  'yskproxyPacUrl3'
   ], function (data) {
     console.log(data);
     let dkeys = Object.keys(data);
@@ -40,16 +34,6 @@ chrome.storage.sync.get([
     }
     if (dkeys.indexOf("yskproxyPacUrl3") > -1) {
       p3Input.value = data.yskproxyPacUrl3;
-    }
-    if (dkeys.indexOf("yskproxyManualProxyScheme") > -1) {
-      mpsInput.value = data.yskproxyManualProxyScheme;
-    } 
-    if (dkeys.indexOf("yskproxyManualProxyHost") > -1) {
-      mphInput.value = data.yskproxyManualProxyHost;
-    }
-    
-    if (dkeys.indexOf("yskproxyManualProxyPort") > -1) {
-      mppInput.value = data.yskproxyManualProxyPort;
     }
     
   
@@ -65,28 +49,21 @@ function setPacUrlAction(name)  {
     alert("Please enter valid configure");
     return
   }
-  npacUrl = pacUrl.replace("/(\r\n|\n|\r)/gm","");
-  console.log(pacUrl);
-  let pacConfigure = {};
+  pacUrl = pacUrl.replace("/(\r\n|\n|\r)/gm","");
+  let pacConfigure = {
+    yskProxy: pacUrl
+  };
   if (name == "pacUrl") {
-     pacConfigure = { yskproxyPacUrl: pacUrl };
+     pacConfigure.yskproxyPacUrl = pacUrl;
   }
   if (name == "pacUrl2") {
-     pacConfigure = { yskproxyPacUrl2: pacUrl };
+     pacConfigure.yskproxyPacUrl2 =  pacUrl;
   }
   if (name == "pacUrl3") {
-     pacConfigure = { yskproxyPacUrl3: pacUrl };
+     pacConfigure.yskproxyPacUrl3 =  pacUrl;
   }
   
-  chrome.storage.sync.set(pacConfigure, function () {
-    console.log('pacUrl: ' + pacUrl)
-  })
-  var config = {
-    proxyType: "autoConfig",
-    autoConfigUrl: npacUrl
-  };
-  
-  chrome.proxy.settings.set({value: config});
+  browser.storage.local.set(pacConfigure);
   displayCurrentProxyConfig();
 
 }
@@ -103,41 +80,4 @@ cbtn2.onclick = function () {
 let cbtn3 = getElm("changePacUrl3");
 cbtn3.onclick = function () {
   setPacUrlAction("pacUrl3");
-}
-
-let mbtn = document.getElementById("changeManualProxy")
-mbtn.onclick = function () {
-  var mps = getElm("manualProxyScheme").value; 
-  var mph = getElm("manualProxyHost").value; 
-  var mpp = getElm("manualProxyPort").value; 
-  chrome.storage.sync.set({
-     yskproxyManualProxyScheme: mps,
-     yskproxyManualProxyHost: mph,
-     yskproxyManualProxyPort: mpp
-     }, function () {
-      console.log('manualProxyScheme: ' + mps);
-      console.log('manualProxyHost: ' + mph);
-      console.log('manualProxyPort: ' + mpp);
-  })
- 
-  var config = {
-    proxyType: "manual",
-    http: mps + "://" + mph + ":" + mpp,
-    httpProxyAll: true
-  };
-  chrome.proxy.settings.set({value: config});
-
-  displayCurrentProxyConfig();
-
-}
-
-let npBtn = document.getElementById("noproxy")
-npBtn.onclick = function () {
-  var config = {
-    proxyType: "none"
-  };
-  
-  chrome.proxy.settings.set({value: config});
-  displayCurrentProxyConfig();
-
 }

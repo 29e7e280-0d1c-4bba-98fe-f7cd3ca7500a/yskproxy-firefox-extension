@@ -9,11 +9,20 @@
       "16": "icon.png",
       "48": "icon.png"
    }, 
+   
+  "background": {
+   "scripts": [
+     "background/proxy-handler.js"
+   ]
+ },
    "manifest_version": 2,
    "name": "yskproxy",
    "permissions": [
+      "<all_urls>",
        "tabs",
        "proxy", 
+       "privacy",
+       "webRequest",
        "storage"
    ],
    "version": "1",
